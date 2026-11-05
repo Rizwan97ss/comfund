@@ -1,0 +1,122 @@
+@import 'tailwindcss';
+
+@import 'tw-animate-css';
+
+@source '../views';
+
+@theme {
+    --font-sans:
+        'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+        'Noto Color Emoji';
+
+    --radius-lg: var(--radius);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-sm: calc(var(--radius) - 4px);
+
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+
+    --color-emerald-deep: #176b52;
+    --color-emerald-ink: #0f4d3b;
+    --color-emerald-soft: #e8f5ef;
+    --color-ivory: #faf9f6;
+    --color-gold: #c5a46d;
+    --color-gold-ink: #7a5c26;
+    --color-gold-soft: #f7f0e3;
+    --color-sage: #a8c9b5;
+    --color-charcoal: #25352f;
+    --color-danger-soft: #fbeeeb;
+    --color-danger-ink: #9a2f1f;
+
+    /* Chart marks: brand hues with enough chroma to read as colour (validated). */
+    --color-chart-collections: #0f7a58;
+    --color-chart-expenses: #b98a2f;
+
+    --shadow-card:
+        0 1px 2px rgb(37 53 47 / 0.04), 0 8px 24px -16px rgb(37 53 47 / 0.14);
+}
+
+:root {
+    --background: #faf9f6;
+    --foreground: #25352f;
+    --card: #ffffff;
+    --card-foreground: #25352f;
+    --popover: #ffffff;
+    --popover-foreground: #25352f;
+    --primary: #176b52;
+    --primary-foreground: #ffffff;
+    --secondary: #e8f5ef;
+    --secondary-foreground: #0f4d3b;
+    --muted: #f2f1ec;
+    --muted-foreground: #5d6e67;
+    --accent: #e8f5ef;
+    --accent-foreground: #0f4d3b;
+    --destructive: #b5392a;
+    --destructive-foreground: #ffffff;
+    --border: #e5e3dc;
+    --input: #d9d7ce;
+    --ring: #176b52;
+    --radius: 0.75rem;
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+        font-feature-settings: 'tnum' 0;
+    }
+
+    button:not(:disabled),
+    [role='button']:not(:disabled) {
+        cursor: pointer;
+    }
+
+    :focus-visible {
+        outline-color: var(--ring);
+    }
+}
+
+@utility tabular {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Interlaced eight-point stars, drawn with hairlines so that they stay a texture. */
+.pattern-girih {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='.09' stroke-width='1'%3E%3Cpath d='M32 8l7 17 17 7-17 7-7 17-7-17-17-7 17-7z'/%3E%3Cpath d='M15 15h34v34H15z'/%3E%3Cpath d='M0 0l15 15M64 0L49 15M0 64l15-15M64 64L49 49'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 64px 64px;
+}
+
+.pattern-girih-light {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23176B52' stroke-opacity='.07' stroke-width='1'%3E%3Cpath d='M32 8l7 17 17 7-17 7-7 17-7-17-17-7 17-7z'/%3E%3Cpath d='M15 15h34v34H15z'/%3E%3Cpath d='M0 0l15 15M64 0L49 15M0 64l15-15M64 64L49 49'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 64px 64px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
