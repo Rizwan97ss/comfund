@@ -213,14 +213,16 @@ export default function ManualEntryPage() {
                             {...register('member_id')}
                         >
                             <option value="">Choose…</option>
-                            {(members.data?.data ?? []).map((member) => (
-                                <option key={member.id} value={member.id}>
-                                    {member.name}{' '}
-                                    {member.member_code
-                                        ? `(${member.member_code})`
-                                        : ''}
-                                </option>
-                            ))}
+                            {(members.data?.data ?? [])
+                                .filter((member) => member.status !== 'pending')
+                                .map((member) => (
+                                    <option key={member.id} value={member.id}>
+                                        {member.name}{' '}
+                                        {member.member_code
+                                            ? `(${member.member_code})`
+                                            : ''}
+                                    </option>
+                                ))}
                         </SelectField>
                     </div>
 

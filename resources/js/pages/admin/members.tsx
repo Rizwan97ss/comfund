@@ -1,7 +1,7 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { UserPlus, Users } from 'lucide-react';
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate, useSearchParams } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { SelectField } from '@/components/fund/form-fields';
@@ -23,7 +23,8 @@ import type { Member, Paginated } from '@/lib/types';
 export default function MembersPage() {
     const navigate = useNavigate();
     const [search, setSearch] = useState('');
-    const [status, setStatus] = useState('');
+    const [searchParams] = useSearchParams();
+    const [status, setStatus] = useState(searchParams.get('status') ?? '');
     const [page, setPage] = useState(1);
 
     const { data, isLoading, error, refetch } = useQuery({
@@ -80,6 +81,7 @@ export default function MembersPage() {
                         }}
                     >
                         <option value="">All</option>
+                        <option value="pending">Pending approval</option>
                         <option value="active">Active</option>
                         <option value="invited">Invited</option>
                         <option value="suspended">Suspended</option>

@@ -3,7 +3,10 @@ import tailwindcss from '@tailwindcss/vite';
 import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
 import { bunny } from 'laravel-vite-plugin/fonts';
+import { loadEnv } from 'vite';
 import { defineConfig, lazyPlugins } from 'vite-plus';
+
+const { APP_URL: appUrl } = loadEnv('development', process.cwd(), 'APP_URL');
 
 export default defineConfig({
     plugins: lazyPlugins(() => [
@@ -25,6 +28,8 @@ export default defineConfig({
     server: {
         // An IPv6 dev URL such as http://[::1]:5173 cannot be written in a Content Security Policy.
         host: '127.0.0.1',
+        // Browsers load assets from this host, and Herd's certificate covers the site name, not the IP.
+        hmr: appUrl ? { host: new URL(appUrl).hostname } : undefined,
         watch: {
             ignored: [
                 '**/.agents/**',

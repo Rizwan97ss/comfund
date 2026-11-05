@@ -85,7 +85,7 @@ test('sign in is throttled after repeated failures', function () {
     $this->postJson('/login', ['email' => 'aisha@example.com', 'password' => 'password'])->assertTooManyRequests();
 });
 
-test('public registration does not exist', function () {
+test('Fortify registration stays off, so nobody is signed in by registering', function () {
     expect(Features::enabled(Features::registration()))->toBeFalse();
 
     $this->postJson('/register', ['name' => 'X', 'email' => 'x@example.com', 'password' => 'password', 'password_confirmation' => 'password'])

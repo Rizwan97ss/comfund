@@ -7,13 +7,15 @@ import {
 import {
     ArrowLeft,
     Ban,
+    Check,
     MailPlus,
     MinusCircle,
     RotateCcw,
     ScrollText,
+    X,
 } from 'lucide-react';
 import { useState } from 'react';
-import { Link, useParams } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { MoneyField } from '@/components/fund/form-fields';
@@ -29,6 +31,7 @@ import {
     Table,
     Td,
 } from '@/components/fund/primitives';
+import { ApproveMemberDialog } from '@/components/fund/approve-member-dialog';
 import { ReasonDialog } from '@/components/fund/reason-dialog';
 import { StatusBadge } from '@/components/fund/status-badge';
 import { api } from '@/lib/api';
@@ -54,10 +57,13 @@ type Detail = { member: Member; dues: DuesSummary; months: DuesMonth[] };
 export default function MemberDetailPage() {
     const { id } = useParams();
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
     const url = `/api/v1/admin/members/${id}`;
     const [page, setPage] = useState(1);
     const [waiving, setWaiving] = useState<DuesMonth | null>(null);
     const [waiverAmount, setWaiverAmount] = useState('');
+    const [approving, setApproving] = useState(false);
+    const [rejecting, setRejecting] = useState(false);
 
     const { data, isLoading, error, refetch } = useQuery({
         queryKey: ['admin', 'member', id],
@@ -115,6 +121,24 @@ export default function MemberDetailPage() {
                         actions={
                             <>
                                 <StatusBadge status={member.status} />
+                                {member.status === 'pending' && (
+                                    <>
+                                        <Button
+                                            size="sm"
+                                            onClick={() => setApproving(true)}
+                                        >
+                                            <Check /> Approve
+                                        </Button>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="text-destructive"
+                                            onClick={() => setRejecting(true)}
+                                        >
+                                            <X /> Reject
+                                        </Button>
+                                    </>
+                                )}
                                 {member.status === 'invited' && (
                                     <Button
                                         variant="outline"
@@ -180,6 +204,32 @@ export default function MemberDetailPage() {
                             hint={`${detail.dues.waived_months} months waived`}
                         />
                     </div>
+
+                    <ApproveMemberDialog
+                        open={approving}
+                        onOpenChange={setApproving}
+                        memberName={member.name}
+                        onConfirm={async (terms) => {
+                            await api.post(`${url}/approve`, terms);
+                            refresh();
+                            toast.success(`${member.name} is now active.`);
+                        }}
+                    />
+                    <ReasonDialog
+                        open={rejecting}
+                        onOpenChange={setRejecting}
+                        title={`Reject ${member.name}?`}
+                        description="Their account is removed and they are emailed this reason. They can register again."
+                        label="Reason"
+                        confirmLabel="Reject registration"
+                        onConfirm={async (reason) => {
+                            await api.post(`${url}/reject`, { reason });
+                            // Leave first: this record no longer exists to refetch.
+                            await navigate('/admin/members');
+                            refresh();
+                            toast.success('Registration rejected.');
+                        }}
+                    />
 
                     <Panel title="Profile">
                         <DetailList

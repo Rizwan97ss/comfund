@@ -193,7 +193,11 @@ export default function AdminDashboardPage() {
                                     </p>
                                 </Link>
                                 <Link
-                                    to="/admin/members"
+                                    to={
+                                        dashboard.members.pending_approval > 0
+                                            ? '/admin/members?status=pending'
+                                            : '/admin/members'
+                                    }
                                     className="rounded-xl bg-muted/50 p-3 transition-colors hover:bg-muted"
                                 >
                                     <Users className="mb-1 size-4 text-emerald-deep" />
@@ -203,6 +207,9 @@ export default function AdminDashboardPage() {
                                     <p className="text-xs text-muted-foreground">
                                         Active, {dashboard.members.invited}{' '}
                                         invited
+                                        {dashboard.members.pending_approval >
+                                            0 &&
+                                            `, ${dashboard.members.pending_approval} awaiting approval`}
                                     </p>
                                 </Link>
                             </div>

@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\V1\MeController;
 use App\Http\Controllers\Api\V1\Member\DashboardController as MemberDashboardController;
 use App\Http\Controllers\Api\V1\Member\SubmissionController;
 use App\Http\Controllers\Api\V1\ReferenceController;
+use App\Http\Controllers\Api\V1\RegistrationController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -26,6 +27,8 @@ Route::prefix('v1')->group(function () {
         Route::post('profile', [InvitationController::class, 'profile']);
         Route::post('activate', [InvitationController::class, 'activate']);
     });
+
+    Route::post('registrations', [RegistrationController::class, 'store'])->middleware('throttle:registrations');
 
     Route::middleware(['auth:sanctum', 'active'])->group(function () {
         Route::get('me', [MeController::class, 'show']);
@@ -55,6 +58,8 @@ Route::prefix('v1')->group(function () {
                 Route::get('members/{member}', [MemberController::class, 'show']);
                 Route::patch('members/{member}', [MemberController::class, 'update']);
                 Route::post('members/{member}/invitation', [MemberController::class, 'resendInvitation'])->middleware('throttle:financial-writes');
+                Route::post('members/{member}/approve', [MemberController::class, 'approve'])->middleware('throttle:financial-writes');
+                Route::post('members/{member}/reject', [MemberController::class, 'reject'])->middleware('throttle:financial-writes');
                 Route::post('members/{member}/suspend', [MemberController::class, 'suspend']);
                 Route::post('members/{member}/reactivate', [MemberController::class, 'reactivate']);
                 Route::get('members/{member}/statement', [MemberController::class, 'statement']);

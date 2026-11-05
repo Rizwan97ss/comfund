@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Fortify;
 
 class FortifyServiceProvider extends ServiceProvider
@@ -49,6 +50,13 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::authenticateUsing(function (Request $request): ?User {
             $user = User::query()->where('email', Str::lower((string) $request->input('email')))->first();
             $passwordMatches = Hash::check((string) $request->input('password'), $user->password ?? self::TIMING_DUMMY_HASH);
+
+            // Only someone who knows the password learns that the account is waiting for review.
+            if ($passwordMatches && $user?->status === AccountStatus::Pending) {
+                throw ValidationException::withMessages([
+                    Fortify::username() => 'Your registration is waiting for approval by an administrator.',
+                ]);
+            }
 
             return $passwordMatches && $user?->status === AccountStatus::Active ? $user : null;
         });

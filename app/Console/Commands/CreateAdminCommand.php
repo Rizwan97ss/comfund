@@ -16,7 +16,7 @@ class CreateAdminCommand extends Command
 {
     protected $signature = 'fund:create-admin';
 
-    protected $description = 'Create an administrator. Registration is closed, so this is how the first admin is made.';
+    protected $description = 'Create an administrator. Self-registration only creates members, so this is how the first admin is made.';
 
     public function handle(): int
     {

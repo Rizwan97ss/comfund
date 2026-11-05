@@ -99,8 +99,14 @@ export default function LoginPage() {
                     Sign in
                 </SubmitButton>
             </form>
-            <p className="mt-6 text-center text-xs text-muted-foreground">
-                New members join by invitation from an administrator.
+            <p className="mt-6 text-center text-sm text-muted-foreground">
+                New to the fund?{' '}
+                <Link
+                    to="/register"
+                    className="font-medium text-emerald-deep underline-offset-4 hover:underline"
+                >
+                    Create an account
+                </Link>
             </p>
         </>
     );

@@ -18,7 +18,7 @@ export type CurrentUser = {
     phone: string | null;
     address: string | null;
     role: 'admin' | 'member';
-    status: 'invited' | 'active' | 'suspended';
+    status: 'pending' | 'invited' | 'active' | 'suspended';
     member_code: string | null;
     joined_on: string | null;
     monthly_contribution_paise: number | null;
@@ -138,7 +138,12 @@ export type AdminDashboard = {
         outstanding_paise: number;
     };
     pending: { count: number; amount_paise: number };
-    members: { active: number; invited: number; with_arrears: number };
+    members: {
+        active: number;
+        invited: number;
+        pending_approval: number;
+        with_arrears: number;
+    };
     funds: FundBalance[];
     accounts: AccountBalance[];
     trend: {
@@ -154,7 +159,7 @@ export type Member = {
     email: string;
     phone: string | null;
     address: string | null;
-    status: 'invited' | 'active' | 'suspended';
+    status: 'pending' | 'invited' | 'active' | 'suspended';
     member_code: string | null;
     joined_on: string | null;
     monthly_contribution_paise: number | null;

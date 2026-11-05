@@ -68,6 +68,7 @@ class ReportService
             'members' => [
                 'active' => (clone $members)->where('status', AccountStatus::Active)->count(),
                 'invited' => (clone $members)->where('status', AccountStatus::Invited)->count(),
+                'pending_approval' => (clone $members)->where('status', AccountStatus::Pending)->count(),
                 'with_arrears' => $this->membersWithOutstanding()->count(),
             ],
             'funds' => $this->fundBalances(),

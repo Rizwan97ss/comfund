@@ -14,7 +14,9 @@ use App\Models\User;
 use App\Services\AuditLogger;
 use App\Services\DuesService;
 use App\Services\InvitationService;
+use App\Services\RegistrationService;
 use App\Services\ReportService;
+use App\Support\BusinessCalendar;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -31,6 +33,7 @@ class MemberController extends Controller
         private readonly InvitationService $invitations,
         private readonly DuesService $dues,
         private readonly AuditLogger $audit,
+        private readonly RegistrationService $registrations,
     ) {}
 
     public function index(Request $request): AnonymousResourceCollection
@@ -101,6 +104,30 @@ class MemberController extends Controller
         $this->invitations->resend($member, $request->user());
 
         return response()->json(['message' => 'Invitation sent.']);
+    }
+
+    public function approve(Request $request, User $member): MemberResource
+    {
+        Gate::authorize('manage', $member);
+
+        /** @var array{joined_on: string, monthly_contribution_paise?: int|null} $terms */
+        $terms = $request->validate([
+            'joined_on' => ['required', 'date_format:Y-m-d', 'before_or_equal:'.BusinessCalendar::today()->format('Y-m-d')],
+            'monthly_contribution_paise' => ['nullable', 'integer', 'min:1', 'max:'.config('fund.max_amount_paise')],
+        ]);
+
+        return new MemberResource($this->registrations->approve($member, $terms));
+    }
+
+    public function reject(Request $request, User $member): JsonResponse
+    {
+        Gate::authorize('manage', $member);
+
+        $validated = $request->validate(['reason' => ['required', 'string', 'min:5', 'max:400']]);
+
+        $this->registrations->reject($member, $validated['reason']);
+
+        return response()->json(['message' => 'Registration rejected.']);
     }
 
     public function suspend(User $member): MemberResource

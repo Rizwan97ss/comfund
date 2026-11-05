@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use App\Concerns\FinancialValidationRules;
 use App\Concerns\RequiresIdempotencyKey;
+use App\Enums\AccountStatus;
 use App\Enums\UserRole;
 use App\Models\Fund;
 use Illuminate\Foundation\Http\FormRequest;
@@ -27,7 +28,7 @@ class StoreManualEntryRequest extends FormRequest
 
         return [
             ...$this->idempotencyRules(),
-            'member_id' => ['required', 'integer', Rule::exists('users', 'id')->where('role', UserRole::Member->value)],
+            'member_id' => ['required', 'integer', Rule::exists('users', 'id')->where('role', UserRole::Member->value)->whereNot('status', AccountStatus::Pending->value)],
             'fund_id' => ['required', 'integer', Rule::exists('funds', 'id')->where('is_active', true)],
             'financial_account_id' => ['required', 'integer', Rule::exists('financial_accounts', 'id')->where('is_active', true)],
             'amount_paise' => $this->amountRules(),

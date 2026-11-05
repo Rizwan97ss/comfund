@@ -16,6 +16,7 @@ import { AuthLayout } from '@/layouts/auth-layout';
 import type { CurrentUser } from '@/lib/types';
 
 const LoginPage = lazy(() => import('@/pages/auth/login'));
+const RegisterPage = lazy(() => import('@/pages/auth/register'));
 const TwoFactorPage = lazy(() => import('@/pages/auth/two-factor'));
 const ForgotPasswordPage = lazy(() => import('@/pages/auth/forgot-password'));
 const ResetPasswordPage = lazy(() => import('@/pages/auth/reset-password'));
@@ -173,6 +174,7 @@ export const router = createBrowserRouter([
                 element: <GuestOnly />,
                 children: [
                     { path: '/login', element: <LoginPage /> },
+                    { path: '/register', element: <RegisterPage /> },
                     {
                         path: '/two-factor-challenge',
                         element: <TwoFactorPage />,
